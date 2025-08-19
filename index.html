@@ -139,11 +139,10 @@
       color: #c0392b;
     }
 
-    /* Gallery - Masonry / Lightroom style */
+    /* Gallery - Responsive masonry-style */
     .gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      grid-auto-rows: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 15px;
       padding: 30px;
       position: relative;
@@ -156,21 +155,13 @@
       border: 2px solid #222;
       border-radius: 4px;
       cursor: pointer;
-      transition: transform 0.3s ease, filter 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      transition: filter 0.3s ease, box-shadow 0.3s ease;
       filter: brightness(0.95);
-      display: block;
       object-fit: cover;
+      display: block;
     }
 
-    /* Masonry row span */
-    .gallery img[data-rowspan] {
-      grid-row-end: span var(--rowspan);
-    }
-
-    /* Subtle Dark Souls-style hover */
     .gallery img:hover {
-      transform: none;
-      border-color: #333;
       filter: brightness(1);
       box-shadow: 0 0 15px rgba(50,50,50,0.5);
     }
@@ -189,7 +180,6 @@
       background: rgba(0,0,0,0.95);
     }
 
-    /* Neutral lightbox glow */
     .lightbox-content {
       margin: auto;
       display: block;
@@ -224,13 +214,8 @@
       transform: none;
     }
 
-    .prev {
-      left: 10px;
-    }
-
-    .next {
-      right: 10px;
-    }
+    .prev { left: 10px; }
+    .next { right: 10px; }
 
     /* Footer */
     footer {
@@ -248,14 +233,15 @@
       color: #ff4c4c;
       text-shadow: 0 0 6px #ff4c4c, 0 0 12px #990000;
     }
+
   </style>
 </head>
 <body>
 
-  <!-- Starfield Background -->
+  <!-- Starfield -->
   <canvas id="starfield"></canvas>
 
-  <!-- Floating Smoke -->
+  <!-- Smoke -->
   <div id="smoke">
     <div class="smoke-particle" style="top:10%; left:20%; animation-delay: 0s;"></div>
     <div class="smoke-particle" style="top:50%; left:70%; animation-delay: 15s;"></div>
@@ -294,9 +280,7 @@
   <!-- About -->
   <section id="about">
     <h2>About Me</h2>
-    <p>I'm Deqlin, a passionate photographer based in Edmonton. 
-    I specialize in events and portraits. 
-    Photography gets me out of the house and makes people smile.</p>
+    <p>I'm Deqlin, a passionate photographer based in Edmonton. I specialize in events and portraits. Photography gets me out of the house and makes people smile.</p>
   </section>
 
   <!-- Contact -->
@@ -332,9 +316,7 @@
       lightboxImg.src = images[index].src;
     }
 
-    function closeLightbox() {
-      lightbox.style.display = 'none';
-    }
+    function closeLightbox() { lightbox.style.display = 'none'; }
 
     function changeSlide(step) {
       currentIndex = (currentIndex + step + images.length) % images.length;
@@ -348,9 +330,7 @@
     // Visitor Counter
     fetch('https://api.countapi.xyz/hit/yourdomain.com/visits')
       .then(res => res.json())
-      .then(data => {
-        document.getElementById('visitor-count').textContent = data.value;
-      });
+      .then(data => { document.getElementById('visitor-count').textContent = data.value; });
 
     // Starfield
     const canvas = document.getElementById('starfield');
@@ -393,10 +373,7 @@
       requestAnimationFrame(drawStars);
     }
 
-    window.addEventListener('scroll', () => {
-      scrollOffset = window.scrollY;
-    });
-
+    window.addEventListener('scroll', () => { scrollOffset = window.scrollY; });
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
     drawStars();
@@ -404,30 +381,9 @@
     // Fade-in sections
     const sections = document.querySelectorAll('section');
     const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
+      entries.forEach(entry => { if(entry.isIntersecting){ entry.target.classList.add('visible'); } });
     }, { threshold: 0.1 });
-
     sections.forEach(section => observer.observe(section));
-
-    // Masonry Layout for gallery
-    function applyMasonry() {
-      const gallery = document.querySelector('.gallery');
-      const rowHeight = parseInt(window.getComputedStyle(gallery).getPropertyValue('grid-auto-rows'));
-      const rowGap = parseInt(window.getComputedStyle(gallery).getPropertyValue('gap'));
-
-      images.forEach(img => {
-        const imgHeight = img.getBoundingClientRect().height;
-        const rowSpan = Math.ceil((imgHeight + rowGap) / (rowHeight + rowGap));
-        img.style.setProperty('--rowspan', rowSpan);
-      });
-    }
-
-    window.addEventListener('load', applyMasonry);
-    window.addEventListener('resize', applyMasonry);
   </script>
 </body>
 </html>
