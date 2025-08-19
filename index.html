@@ -27,7 +27,6 @@
       overflow-x: hidden;
     }
 
-    /* Starfield Background */
     canvas#starfield {
       position: fixed;
       top: 0;
@@ -37,7 +36,6 @@
       height: 100%;
     }
 
-    /* Smoke / Mist Effect */
     #smoke {
       position: fixed;
       top: 0;
@@ -64,7 +62,6 @@
       100% { transform: translate(-100px,-200px) scale(1); }
     }
 
-    /* Navigation */
     nav {
       position: sticky;
       top: 0;
@@ -88,7 +85,6 @@
       text-shadow: 0 0 6px #c0392b;
     }
 
-    /* Header */
     header {
       text-align: center;
       padding: 5rem 2rem;
@@ -115,7 +111,6 @@
       100% { transform: scale(1); text-shadow: 0 0 0px #c0392b; }
     }
 
-    /* Sections */
     section {
       padding: 50px 20px;
       max-width: 1200px;
@@ -147,7 +142,6 @@
       color: #c0392b;
     }
 
-    /* Gallery */
     .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -175,28 +169,28 @@
       box-shadow: 0 0 15px rgba(50,50,50,0.5);
     }
 
-    /* Lightbox */
     .lightbox {
       display: none;
       position: fixed;
-      top: 0;
+      z-index: 2000;
       left: 0;
+      top: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.95);
-      z-index: 2000;
+      display: flex;
       justify-content: center;
       align-items: center;
-      flex-direction: row;
+      background: rgba(0,0,0,0.95);
+      overflow: hidden;
     }
 
     .lightbox-content {
-      max-width: 90%;
-      max-height: 90%;
-      object-fit: contain;
+      max-width: 80%;
+      max-height: 80%;
       box-shadow: 0 0 20px rgba(50,50,50,0.5);
       border: 1px solid #333;
-      pointer-events: none; /* ensures arrows clickable */
+      pointer-events: none;
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
     }
 
     .close, .prev, .next {
@@ -208,31 +202,15 @@
       padding: 10px;
       user-select: none;
       transition: color 0.3s ease;
-      z-index: 3001; /* above image */
+      z-index: 3001;
     }
 
-    .close:hover, .prev:hover, .next:hover {
-      color: #ff6666;
-    }
+    .close:hover, .prev:hover, .next:hover { color: #ff6666; }
 
-    .close {
-      top: 20px;
-      right: 35px;
-    }
+    .close { top: 20px; right: 35px; }
+    .prev { left: 10px; top: 50%; transform: translateY(-50%); }
+    .next { right: 10px; top: 50%; transform: translateY(-50%); }
 
-    .prev {
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-
-    .next {
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-
-    /* Footer */
     footer {
       text-align: center;
       padding: 1rem;
@@ -248,15 +226,12 @@
       color: #ff4c4c;
       text-shadow: 0 0 6px #ff4c4c, 0 0 12px #990000;
     }
-
   </style>
 </head>
 <body>
 
-  <!-- Starfield -->
   <canvas id="starfield"></canvas>
 
-  <!-- Smoke -->
   <div id="smoke">
     <div class="smoke-particle" style="top:10%; left:20%; animation-delay: 0s;"></div>
     <div class="smoke-particle" style="top:50%; left:70%; animation-delay: 15s;"></div>
@@ -264,20 +239,17 @@
     <div class="smoke-particle" style="top:80%; left:10%; animation-delay: 45s;"></div>
   </div>
 
-  <!-- Navigation -->
   <nav>
     <a href="#gallery">Gallery</a>
     <a href="#about">About</a>
     <a href="#contact">Contact</a>
   </nav>
 
-  <!-- Header -->
   <header>
     <h1>some of my stuff</h1>
     <p>take a look around</p>
   </header>
 
-  <!-- Gallery -->
   <section id="gallery" class="gallery">
     <img src="photos/photo1.jpg" alt="Photo 1" loading="lazy" onclick="openLightbox(0)">
     <img src="photos/photo2.jpg" alt="Photo 2" loading="lazy" onclick="openLightbox(1)">
@@ -292,25 +264,21 @@
     <img src="photos/photo11.jpg" alt="Photo 11" loading="lazy" onclick="openLightbox(10)">
   </section>
 
-  <!-- About -->
   <section id="about">
     <h2>About Me</h2>
     <p>I'm Deqlin, a passionate photographer based in Edmonton. I specialize in events and portraits. Photography gets me out of the house and makes people smile.</p>
   </section>
 
-  <!-- Contact -->
   <section id="contact">
     <h2>Contact</h2>
     <p>Email: <a href="mailto:deqlin.duggan@gmail.com">deqlin.duggan@gmail.com</a></p>
     <p>Instagram: <a href="https://instagram.com/awhek" target="_blank">@awhek</a></p>
   </section>
 
-  <!-- Footer -->
   <footer>
     <p>&copy; 2025 Deq | Visitors: <span id="visitor-count">...</span></p>
   </footer>
 
-  <!-- Lightbox -->
   <div id="lightbox" class="lightbox">
     <span class="close" onclick="closeLightbox()">&times;</span>
     <span class="prev" onclick="changeSlide(-1)">&#10094;</span>
@@ -319,7 +287,6 @@
   </div>
 
   <script>
-    // Lightbox
     const images = document.querySelectorAll('.gallery img');
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
@@ -328,18 +295,56 @@
     function openLightbox(index) {
       currentIndex = index;
       lightbox.style.display = 'flex';
+      lightboxImg.style.transition = 'none';
+      lightboxImg.style.transform = 'translateX(0)';
       lightboxImg.src = images[index].src;
     }
 
     function closeLightbox() { lightbox.style.display = 'none'; }
 
-    function changeSlide(step) {
+    function changeSlide(step, swipeVelocity = 0) {
+      const oldIndex = currentIndex;
       currentIndex = (currentIndex + step + images.length) % images.length;
-      lightboxImg.src = images[currentIndex].src;
+      const direction = step > 0 ? 1 : -1;
+      const newSrc = images[currentIndex].src;
+
+      let moveDistance = 100 + Math.min(Math.abs(swipeVelocity) * 500, 150); // momentum distance
+      lightboxImg.style.transition = 'transform 0.4s cubic-bezier(0.25,1,0.5,1), opacity 0.4s ease';
+      lightboxImg.style.transform = `translateX(${-direction*moveDistance}%)`;
+      lightboxImg.style.opacity = 0;
+
+      setTimeout(() => {
+        lightboxImg.src = newSrc;
+        lightboxImg.style.transition = 'none';
+        lightboxImg.style.transform = `translateX(${direction*50}%)`;
+        lightboxImg.style.opacity = 0.5;
+        requestAnimationFrame(() => {
+          lightboxImg.style.transition = 'transform 0.4s cubic-bezier(0.25,1,0.5,1), opacity 0.4s ease';
+          lightboxImg.style.transform = 'translateX(0)';
+          lightboxImg.style.opacity = 1;
+        });
+      }, 400);
     }
 
-    lightbox.addEventListener('click', (e) => {
-      if (e.target === lightbox) closeLightbox();
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+
+    // Mobile swipe
+    let startX = 0;
+    let startTime = 0;
+    lightbox.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
+      startTime = e.timeStamp;
+    }, {passive:true});
+
+    lightbox.addEventListener('touchend', e => {
+      const endX = e.changedTouches[0].clientX;
+      const endTime = e.timeStamp;
+      const diffX = endX - startX;
+      const velocity = diffX / (endTime - startTime); // px/ms
+
+      if (Math.abs(diffX) > 30 || Math.abs(velocity) > 0.3) {
+        changeSlide(diffX < 0 ? 1 : -1, velocity);
+      }
     });
 
     // Visitor Counter
@@ -366,25 +371,20 @@
     function drawStars() {
       ctx.fillStyle = '#0b0b0b';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-
       for (let star of stars) {
         star.z -= 0.375;
         if (star.z <= 0) star.z = canvas.width;
-
         let k = 128.0 / star.z;
         let x = star.x * k + canvas.width / 2 + scrollOffset * 0.1;
         let y = star.y * k + canvas.height / 2 + scrollOffset * 0.05;
-
         if (x >= 0 && x <= canvas.width && y >= 0 && y <= canvas.height) {
           let size = (1 - star.z / canvas.width) * 2;
           ctx.fillStyle = 'white';
           ctx.fillRect(x, y, size, size);
         }
       }
-
       ctx.fillStyle = 'rgba(20,20,20,0.2)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-
       requestAnimationFrame(drawStars);
     }
 
@@ -393,10 +393,9 @@
     resizeCanvas();
     drawStars();
 
-    // Fade-in sections
     const sections = document.querySelectorAll('section');
     const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => { if(entry.isIntersecting){ entry.target.classList.add('visible'); } });
+      entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
     }, { threshold: 0.1 });
     sections.forEach(section => observer.observe(section));
   </script>
