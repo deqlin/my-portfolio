@@ -33,7 +33,7 @@
     nav {
       position: sticky;
       top: 0;
-      background: #0b0b0b;
+      background: rgba(0,0,0,0.4); /* slightly transparent */
       padding: 1rem;
       text-align: center;
       z-index: 1000;
@@ -41,7 +41,7 @@
 
     nav a {
       font-family: 'Press Start 2P', cursive;
-      color: #eee;
+      color: #ddd;
       text-decoration: none;
       margin: 0 15px;
       font-size: 0.9rem;
@@ -50,14 +50,14 @@
 
     nav a:hover {
       color: #c0392b;
-      text-shadow: 0 0 8px #c0392b;
+      text-shadow: 0 0 6px #c0392b;
     }
 
-    /* Header */
+    /* Header transparent */
     header {
       text-align: center;
       padding: 5rem 2rem;
-      background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+      background: rgba(0,0,0,0.3); /* semi-transparent so stars show */
       color: #eee;
       font-family: 'Cinzel', serif;
     }
@@ -317,7 +317,7 @@
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       for (let star of stars) {
-        star.z -= 1; // slower
+        star.z -= 0.75; // slower
         if (star.z <= 0) star.z = canvas.width;
 
         let k = 128.0 / star.z;
