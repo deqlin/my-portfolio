@@ -5,16 +5,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Photography Portfolio</title>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Press+Start+2P&display=swap" rel="stylesheet">
+
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      color: #fff;
+      color: #eee;
       scroll-behavior: smooth;
-      background: #000; /* fallback for starfield */
+      background: #0b0b0b;
+      overflow-x: hidden;
     }
 
+    /* Starfield Background */
     canvas#starfield {
       position: fixed;
       top: 0;
@@ -28,7 +33,7 @@
     nav {
       position: sticky;
       top: 0;
-      background: #000;
+      background: #0b0b0b;
       padding: 1rem;
       text-align: center;
       z-index: 1000;
@@ -36,39 +41,74 @@
 
     nav a {
       font-family: 'Press Start 2P', cursive;
-      color: #fff;
+      color: #eee;
       text-decoration: none;
       margin: 0 15px;
       font-size: 0.9rem;
-      transition: text-shadow 0.3s ease;
+      transition: text-shadow 0.3s ease, color 0.3s ease;
     }
 
     nav a:hover {
-      text-shadow: 0 0 8px #00ffcc;
+      color: #c0392b;
+      text-shadow: 0 0 8px #c0392b;
     }
 
+    /* Header */
     header {
       text-align: center;
-      padding: 4rem 2rem;
-      background: linear-gradient(135deg, #ff66cc, #6600ff);
-      color: white;
+      padding: 5rem 2rem;
+      background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+      color: #eee;
+      font-family: 'Cinzel', serif;
     }
 
     header h1 {
+      font-size: 3rem;
       margin: 0;
-      font-size: 2.5rem;
-      font-family: 'Press Start 2P', cursive;
     }
 
     header p {
-      margin: 1rem 0 0;
       font-size: 1rem;
-      color: #f0f0f0;
+      margin-top: 0.5rem;
+      color: #aaa;
     }
 
+    /* Sections */
+    section {
+      padding: 50px 20px;
+      max-width: 900px;
+      margin: auto;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.8s ease-out;
+    }
+
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.5rem;
+      color: #c0392b;
+      margin-bottom: 25px;
+    }
+
+    p, a {
+      font-family: Arial, sans-serif;
+      font-size: 1rem;
+      color: #ccc;
+    }
+
+    a:hover {
+      color: #c0392b;
+    }
+
+    /* Gallery */
     .gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 20px;
       padding: 30px;
     }
@@ -76,37 +116,33 @@
     .gallery img {
       width: 100%;
       height: auto;
-      border: 4px solid #ccc;
-      border-radius: 6px;
+      border: 4px solid #111;
+      border-radius: 4px;
       cursor: pointer;
-      transition: transform 0.3s ease, border-color 0.3s ease;
+      transition: transform 0.3s ease, filter 0.3s ease, border-color 0.3s ease;
+      filter: brightness(0.9);
+      position: relative;
     }
 
     .gallery img:hover {
-      transform: scale(1.05);
-      border-color: #ff66cc;
+      transform: scale(1.06) rotate(-1deg);
+      border-color: #c0392b;
+      filter: brightness(1.1) contrast(1.1);
     }
 
-    section {
-      padding: 40px 20px;
-      max-width: 900px;
-      margin: auto;
-    }
-
-    h2 {
-      font-family: 'Press Start 2P', cursive;
-      font-size: 1.2rem;
-      margin-bottom: 20px;
-    }
-
-    footer {
-      text-align: center;
-      padding: 1rem;
-      background: #000;
-      color: #aaa;
-      margin-top: 20px;
-      font-family: 'Press Start 2P', cursive;
-      font-size: 0.7rem;
+    /* Hover captions */
+    .gallery img:hover::after {
+      content: attr(data-caption);
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      color: #ff4c4c;
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      background: rgba(0,0,0,0.6);
+      padding: 4px 6px;
+      border-radius: 3px;
+      pointer-events: none;
     }
 
     /* Lightbox */
@@ -120,7 +156,7 @@
       width: 100%;
       height: 100%;
       overflow: auto;
-      background: rgba(0,0,0,0.9);
+      background: rgba(0,0,0,0.95);
     }
 
     .lightbox-content {
@@ -128,24 +164,30 @@
       display: block;
       max-width: 80%;
       max-height: 80%;
+      box-shadow: 0 0 40px #c0392b;
+      border: 2px solid #c0392b;
     }
 
     .close, .prev, .next {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      color: white;
+      color: #c0392b;
       font-size: 2rem;
       font-weight: bold;
       cursor: pointer;
       padding: 10px;
       user-select: none;
+      transition: color 0.3s ease;
+    }
+
+    .close:hover, .prev:hover, .next:hover {
+      color: #ff6666;
     }
 
     .close {
       top: 20px;
       right: 35px;
-      font-size: 2rem;
       transform: none;
     }
 
@@ -156,6 +198,24 @@
     .next {
       right: 10px;
     }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: #0b0b0b;
+      color: #888;
+      margin-top: 20px;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 0.7rem;
+    }
+
+    #visitor-count {
+      font-family: 'Press Start 2P', cursive;
+      color: #ff4c4c;
+      text-shadow: 0 0 6px #ff4c4c, 0 0 12px #990000;
+    }
+
   </style>
 </head>
 <body>
@@ -178,17 +238,17 @@
 
   <!-- Gallery -->
   <section id="gallery" class="gallery">
-    <img src="photos/photo1.jpg" alt="Photo 1" loading="lazy" onclick="openLightbox(0)">
-    <img src="photos/photo2.jpg" alt="Photo 2" loading="lazy" onclick="openLightbox(1)">
-    <img src="photos/photo3.jpg" alt="Photo 3" loading="lazy" onclick="openLightbox(2)">
-    <img src="photos/photo4.jpg" alt="Photo 4" loading="lazy" onclick="openLightbox(3)">
-    <img src="photos/photo5.jpg" alt="Photo 5" loading="lazy" onclick="openLightbox(4)">
-    <img src="photos/photo6.jpg" alt="Photo 6" loading="lazy" onclick="openLightbox(5)">
-    <img src="photos/photo7.jpg" alt="Photo 7" loading="lazy" onclick="openLightbox(6)">
-    <img src="photos/photo8.jpg" alt="Photo 8" loading="lazy" onclick="openLightbox(7)">
-    <img src="photos/photo9.jpg" alt="Photo 9" loading="lazy" onclick="openLightbox(8)">
-    <img src="photos/photo10.jpg" alt="Photo 10" loading="lazy" onclick="openLightbox(9)">
-    <img src="photos/photo11.jpg" alt="Photo 11" loading="lazy" onclick="openLightbox(10)">
+    <img src="photos/photo1.jpg" alt="Photo 1" data-caption="Misty Forest" loading="lazy" onclick="openLightbox(0)">
+    <img src="photos/photo2.jpg" alt="Photo 2" data-caption="Abandoned Alley" loading="lazy" onclick="openLightbox(1)">
+    <img src="photos/photo3.jpg" alt="Photo 3" data-caption="Silent Portrait" loading="lazy" onclick="openLightbox(2)">
+    <img src="photos/photo4.jpg" alt="Photo 4" data-caption="Dark Ruins" loading="lazy" onclick="openLightbox(3)">
+    <img src="photos/photo5.jpg" alt="Photo 5" data-caption="Foggy Street" loading="lazy" onclick="openLightbox(4)">
+    <img src="photos/photo6.jpg" alt="Photo 6" data-caption="Night Sky" loading="lazy" onclick="openLightbox(5)">
+    <img src="photos/photo7.jpg" alt="Photo 7" data-caption="Haunted Forest" loading="lazy" onclick="openLightbox(6)">
+    <img src="photos/photo8.jpg" alt="Photo 8" data-caption="Creepy Portrait" loading="lazy" onclick="openLightbox(7)">
+    <img src="photos/photo9.jpg" alt="Photo 9" data-caption="Desolate Hall" loading="lazy" onclick="openLightbox(8)">
+    <img src="photos/photo10.jpg" alt="Photo 10" data-caption="Red Moon" loading="lazy" onclick="openLightbox(9)">
+    <img src="photos/photo11.jpg" alt="Photo 11" data-caption="Gothic Arch" loading="lazy" onclick="openLightbox(10)">
   </section>
 
   <!-- About -->
@@ -220,9 +280,7 @@
   </div>
 
   <script>
-    // -------------------
     // Lightbox
-    // -------------------
     const images = document.querySelectorAll('.gallery img');
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
@@ -232,6 +290,7 @@
       currentIndex = index;
       lightbox.style.display = 'block';
       lightboxImg.src = images[index].src;
+      lightboxImg.alt = images[index].getAttribute('data-caption') || '';
     }
 
     function closeLightbox() {
@@ -241,24 +300,21 @@
     function changeSlide(step) {
       currentIndex = (currentIndex + step + images.length) % images.length;
       lightboxImg.src = images[currentIndex].src;
+      lightboxImg.alt = images[currentIndex].getAttribute('data-caption') || '';
     }
 
     lightbox.addEventListener('click', (e) => {
       if (e.target === lightbox) closeLightbox();
     });
 
-    // -------------------
     // Visitor Counter
-    // -------------------
     fetch('https://api.countapi.xyz/hit/yourdomain.com/visits')
       .then(res => res.json())
       .then(data => {
         document.getElementById('visitor-count').textContent = data.value;
       });
 
-    // -------------------
-    // Starfield
-    // -------------------
+    // Starfield + Fog
     const canvas = document.getElementById('starfield');
     const ctx = canvas.getContext('2d');
     let stars = [];
@@ -274,7 +330,7 @@
     }
 
     function drawStars() {
-      ctx.fillStyle = 'black';
+      ctx.fillStyle = '#0b0b0b';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       for (let star of stars) {
@@ -292,15 +348,28 @@
         }
       }
 
+      // Fog overlay
+      ctx.fillStyle = 'rgba(20,20,20,0.2)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
       requestAnimationFrame(drawStars);
     }
 
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
     drawStars();
+
+    // Fade-in sections on scroll
+    const sections = document.querySelectorAll('section');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    sections.forEach(section => observer.observe(section));
   </script>
 </body>
 </html>
-
-
-
