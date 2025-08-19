@@ -319,10 +319,11 @@
         document.getElementById('visitor-count').textContent = data.value;
       });
 
-    // Starfield + Fog
+    // Starfield + Fog + Parallax
     const canvas = document.getElementById('starfield');
     const ctx = canvas.getContext('2d');
     let stars = [];
+    let scrollOffset = 0;
 
     function resizeCanvas() {
       canvas.width = window.innerWidth;
@@ -339,12 +340,13 @@
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       for (let star of stars) {
-        star.z -= 2;
+        // Slower movement (50% speed)
+        star.z -= 1;
         if (star.z <= 0) star.z = canvas.width;
 
         let k = 128.0 / star.z;
-        let x = star.x * k + canvas.width / 2;
-        let y = star.y * k + canvas.height / 2;
+        let x = star.x * k + canvas.width / 2 + scrollOffset * 0.1; // subtle parallax
+        let y = star.y * k + canvas.height / 2 + scrollOffset * 0.05;
 
         if (x >= 0 && x <= canvas.width && y >= 0 && y <= canvas.height) {
           let size = (1 - star.z / canvas.width) * 2;
@@ -359,6 +361,10 @@
 
       requestAnimationFrame(drawStars);
     }
+
+    window.addEventListener('scroll', () => {
+      scrollOffset = window.scrollY;
+    });
 
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
