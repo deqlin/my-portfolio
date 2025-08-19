@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="icon" type="image/png" href="favicon.png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Photography Portfolio</title>
@@ -8,81 +9,162 @@
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Press+Start+2P&display=swap" rel="stylesheet">
 
-  <!-- Favicons -->
-  <link rel="apple-touch-icon" sizes="180x180" href="my-portfolio/favicon/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="my-portfolio/favicon/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="my-portfolio/favicon/favicon-16x16.png">
-  <link rel="manifest" href="my-portfolio/favicon/site.webmanifest">
-  <link rel="mask-icon" href="my-portfolio/favicon/safari-pinned-tab.svg" color="#5bbad5">
-  <meta name="msapplication-TileColor" content="#2b5797">
-  <meta name="msapplication-config" content="my-portfolio/favicon/browserconfig.xml">
-  <meta name="theme-color" content="#0b0b0b">
-
   <style>
-    /* Reset */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
-      font-family: 'Cinzel', serif;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: #eee;
+      scroll-behavior: smooth;
       background: #0b0b0b;
-      color: #f5f5f5;
       overflow-x: hidden;
     }
 
-    header {
+    /* Starfield Background */
+    canvas#starfield {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -2;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Smoke / Mist Effect */
+    #smoke {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
-      padding: 20px;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .smoke-particle {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle, rgba(30,30,30,0.2) 0%, rgba(30,30,30,0) 70%);
+      border-radius: 50%;
+      opacity: 0.1;
+      animation: drift 60s linear infinite;
+    }
+
+    @keyframes drift {
+      0%   { transform: translate(0,0) scale(1); }
+      50%  { transform: translate(200px,-50px) scale(1.2); }
+      100% { transform: translate(-100px,-200px) scale(1); }
+    }
+
+    /* Navigation */
+    nav {
+      position: sticky;
+      top: 0;
+      background: rgba(0,0,0,0.4);
+      padding: 1rem;
       text-align: center;
-      font-size: 2rem;
-      font-family: 'Press Start 2P', cursive;
-      color: #fff;
-      background: transparent;
       z-index: 1000;
     }
 
-    main {
-      padding-top: 100px;
-      padding-bottom: 100px;
-      max-width: 1200px;
-      margin: auto;
+    nav a {
+      font-family: 'Press Start 2P', cursive;
+      color: #ddd;
+      text-decoration: none;
+      margin: 0 15px;
+      font-size: 0.9rem;
+      transition: text-shadow 0.3s ease, color 0.3s ease;
     }
 
-    /* Masonry grid */
+    nav a:hover {
+      color: #c0392b;
+      text-shadow: 0 0 6px #c0392b;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 5rem 2rem;
+      background: #0b0b0b;
+      color: #eee;
+      font-family: 'Cinzel', serif;
+    }
+
+    header h1 {
+      font-size: 3rem;
+      margin: 0;
+      animation: pulse 3s infinite alternate;
+    }
+
+    header p {
+      font-size: 1rem;
+      margin-top: 0.5rem;
+      color: #aaa;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); text-shadow: 0 0 0px #c0392b; }
+      50% { transform: scale(1.02); text-shadow: 0 0 8px #c0392b; }
+      100% { transform: scale(1); text-shadow: 0 0 0px #c0392b; }
+    }
+
+    /* Sections */
+    section {
+      padding: 50px 20px;
+      max-width: 1200px;
+      margin: auto;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.8s ease-out;
+    }
+
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.5rem;
+      color: #c0392b;
+      margin-bottom: 25px;
+    }
+
+    p, a {
+      font-family: Arial, sans-serif;
+      font-size: 1rem;
+      color: #ccc;
+    }
+
+    a:hover {
+      color: #c0392b;
+    }
+
+    /* Gallery - balanced masonry style */
     .gallery {
-      column-count: 3;
-      column-gap: 15px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-auto-rows: 250px; /* base row height */
+      gap: 15px;
+      padding: 30px;
+      position: relative;
+      z-index: 1;
     }
 
     .gallery img {
       width: 100%;
-      margin-bottom: 15px;
-      border-radius: 5px;
-      transition: transform 0.3s ease;
+      height: 100%;
+      border: 2px solid #222;
+      border-radius: 4px;
       cursor: pointer;
+      transition: filter 0.3s ease, box-shadow 0.3s ease;
+      filter: brightness(0.95);
+      object-fit: cover; /* keeps portrait vs landscape neat */
       display: block;
     }
 
     .gallery img:hover {
-      transform: scale(1.02);
-    }
-
-    @media (max-width: 1024px) {
-      .gallery {
-        column-count: 2;
-      }
-    }
-
-    @media (max-width: 600px) {
-      .gallery {
-        column-count: 1;
-      }
+      filter: brightness(1);
+      box-shadow: 0 0 15px rgba(50,50,50,0.5);
     }
 
     /* Lightbox */
@@ -96,29 +178,35 @@
       width: 100%;
       height: 100%;
       overflow: auto;
-      background-color: rgba(0, 0, 0, 0.95);
+      background: rgba(0,0,0,0.95);
     }
 
     .lightbox-content {
       margin: auto;
       display: block;
-      max-width: 90%;
-      max-height: 90%;
-      border: 2px solid #444;
-      border-radius: 6px;
+      max-width: 80%;
+      max-height: 80%;
+      box-shadow: 0 0 20px rgba(50,50,50,0.5);
+      border: 1px solid #333;
+      animation: none;
     }
 
     .close, .prev, .next {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      color: #aaa;
+      color: #c0392b;
       font-size: 2rem;
       font-weight: bold;
-      padding: 12px;
       cursor: pointer;
+      padding: 10px;
       user-select: none;
       transition: color 0.3s ease;
+      z-index: 3000;
+    }
+
+    .close:hover, .prev:hover, .next:hover {
+      color: #ff6666;
     }
 
     .close {
@@ -130,128 +218,174 @@
     .prev { left: 10px; }
     .next { right: 10px; }
 
-    .close:hover, .prev:hover, .next:hover {
-      color: #fff;
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: #0b0b0b;
+      color: #888;
+      margin-top: 20px;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 0.7rem;
     }
 
-    /* Starfield */
-    .stars {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -2;
-      overflow: hidden;
+    #visitor-count {
+      font-family: 'Press Start 2P', cursive;
+      color: #ff4c4c;
+      text-shadow: 0 0 6px #ff4c4c, 0 0 12px #990000;
     }
 
-    .stars span {
-      position: absolute;
-      border-radius: 50%;
-      background: #fff;
-      opacity: 0.8;
-      animation: move linear infinite;
-    }
-
-    @keyframes move {
-      from { transform: translateY(0); }
-      to { transform: translateY(200vh); }
-    }
-
-    /* Mist */
-    .mist {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(ellipse at bottom, rgba(255,255,255,0.05), transparent 70%);
-      z-index: -1;
-      animation: mistmove 60s linear infinite alternate;
-    }
-
-    @keyframes mistmove {
-      from { transform: translateX(-5%); }
-      to { transform: translateX(5%); }
-    }
   </style>
 </head>
 <body>
-  <header>My Portfolio</header>
 
-  <!-- Stars background -->
-  <div class="stars"></div>
-  <div class="mist"></div>
+  <!-- Starfield -->
+  <canvas id="starfield"></canvas>
 
-  <main>
-    <section class="gallery">
-      <img src="photos/photo1.jpg" alt="Photo 1">
-      <img src="photos/photo2.jpg" alt="Photo 2">
-      <img src="photos/photo3.jpg" alt="Photo 3">
-      <!-- Add more photos here -->
-    </section>
-  </main>
+  <!-- Smoke -->
+  <div id="smoke">
+    <div class="smoke-particle" style="top:10%; left:20%; animation-delay: 0s;"></div>
+    <div class="smoke-particle" style="top:50%; left:70%; animation-delay: 15s;"></div>
+    <div class="smoke-particle" style="top:30%; left:40%; animation-delay: 30s;"></div>
+    <div class="smoke-particle" style="top:80%; left:10%; animation-delay: 45s;"></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="#gallery">Gallery</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <!-- Header -->
+  <header>
+    <h1>some of my stuff</h1>
+    <p>take a look around</p>
+  </header>
+
+  <!-- Gallery -->
+  <section id="gallery" class="gallery">
+    <img src="photos/photo1.jpg" alt="Photo 1" loading="lazy" onclick="openLightbox(0)">
+    <img src="photos/photo2.jpg" alt="Photo 2" loading="lazy" onclick="openLightbox(1)">
+    <img src="photos/photo3.jpg" alt="Photo 3" loading="lazy" onclick="openLightbox(2)">
+    <img src="photos/photo4.jpg" alt="Photo 4" loading="lazy" onclick="openLightbox(3)">
+    <img src="photos/photo5.jpg" alt="Photo 5" loading="lazy" onclick="openLightbox(4)">
+    <img src="photos/photo6.jpg" alt="Photo 6" loading="lazy" onclick="openLightbox(5)">
+    <img src="photos/photo7.jpg" alt="Photo 7" loading="lazy" onclick="openLightbox(6)">
+    <img src="photos/photo8.jpg" alt="Photo 8" loading="lazy" onclick="openLightbox(7)">
+    <img src="photos/photo9.jpg" alt="Photo 9" loading="lazy" onclick="openLightbox(8)">
+    <img src="photos/photo10.jpg" alt="Photo 10" loading="lazy" onclick="openLightbox(9)">
+    <img src="photos/photo11.jpg" alt="Photo 11" loading="lazy" onclick="openLightbox(10)">
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <h2>About Me</h2>
+    <p>I'm Deqlin, a passionate photographer based in Edmonton. I specialize in events and portraits. Photography gets me out of the house and makes people smile.</p>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <h2>Contact</h2>
+    <p>Email: <a href="mailto:deqlin.duggan@gmail.com">deqlin.duggan@gmail.com</a></p>
+    <p>Instagram: <a href="https://instagram.com/awhek" target="_blank">@awhek</a></p>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Deq | Visitors: <span id="visitor-count">...</span></p>
+  </footer>
 
   <!-- Lightbox -->
   <div id="lightbox" class="lightbox">
-    <span class="close">&times;</span>
-    <span class="prev">&#10094;</span>
-    <img class="lightbox-content" id="lightbox-img">
-    <span class="next">&#10095;</span>
+    <span class="close" onclick="closeLightbox()">&times;</span>
+    <span class="prev" onclick="changeSlide(-1)">&#10094;</span>
+    <span class="next" onclick="changeSlide(1)">&#10095;</span>
+    <img class="lightbox-content" id="lightbox-img" alt="">
   </div>
 
   <script>
-    // Create stars
-    const starsContainer = document.querySelector('.stars');
-    const numStars = 80;
-
-    for (let i = 0; i < numStars; i++) {
-      const star = document.createElement('span');
-      const size = Math.random() * 2 + 1;
-      star.style.width = size + 'px';
-      star.style.height = size + 'px';
-      star.style.left = Math.random() * 100 + '%';
-      star.style.top = -10 + 'px';
-      star.style.setProperty('--x', Math.random());
-      star.style.setProperty('--y', Math.random());
-      star.style.animationDuration = (40 + Math.random() * 20) + 's'; // slowed more
-      starsContainer.appendChild(star);
-    }
-
     // Lightbox
-    const galleryImages = document.querySelectorAll('.gallery img');
+    const images = document.querySelectorAll('.gallery img');
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
-    const closeBtn = document.querySelector('.close');
-    const prevBtn = document.querySelector('.prev');
-    const nextBtn = document.querySelector('.next');
     let currentIndex = 0;
 
-    galleryImages.forEach((img, index) => {
-      img.addEventListener('click', () => {
-        lightbox.style.display = 'block';
-        lightboxImg.src = img.src;
-        currentIndex = index;
-      });
+    function openLightbox(index) {
+      currentIndex = index;
+      lightbox.style.display = 'block';
+      lightboxImg.src = images[index].src;
+    }
+
+    function closeLightbox() { lightbox.style.display = 'none'; }
+
+    function changeSlide(step) {
+      currentIndex = (currentIndex + step + images.length) % images.length;
+      lightboxImg.src = images[currentIndex].src;
+    }
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
     });
 
-    closeBtn.addEventListener('click', () => {
-      lightbox.style.display = 'none';
-    });
+    // Visitor Counter
+    fetch('https://api.countapi.xyz/hit/yourdomain.com/visits')
+      .then(res => res.json())
+      .then(data => { document.getElementById('visitor-count').textContent = data.value; });
 
-    prevBtn.addEventListener('click', () => {
-      currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
-      lightboxImg.src = galleryImages[currentIndex].src;
-    });
+    // Starfield
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+    let scrollOffset = 0;
 
-    nextBtn.addEventListener('click', () => {
-      currentIndex = (currentIndex + 1) % galleryImages.length;
-      lightboxImg.src = galleryImages[currentIndex].src;
-    });
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      stars = Array.from({length: 150}, () => ({
+        x: Math.random() * canvas.width - canvas.width/2,
+        y: Math.random() * canvas.height - canvas.height/2,
+        z: Math.random() * canvas.width
+      }));
+    }
 
-    window.addEventListener('click', (e) => {
-      if (e.target === lightbox) lightbox.style.display = 'none';
-    });
+    function drawStars() {
+      ctx.fillStyle = '#0b0b0b';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      for (let star of stars) {
+        star.z -= 0.375; // slower star speed
+        if (star.z <= 0) star.z = canvas.width;
+
+        let k = 128.0 / star.z;
+        let x = star.x * k + canvas.width / 2 + scrollOffset * 0.1;
+        let y = star.y * k + canvas.height / 2 + scrollOffset * 0.05;
+
+        if (x >= 0 && x <= canvas.width && y >= 0 && y <= canvas.height) {
+          let size = (1 - star.z / canvas.width) * 2;
+          ctx.fillStyle = 'white';
+          ctx.fillRect(x, y, size, size);
+        }
+      }
+
+      ctx.fillStyle = 'rgba(20,20,20,0.2)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      requestAnimationFrame(drawStars);
+    }
+
+    window.addEventListener('scroll', () => { scrollOffset = window.scrollY; });
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    drawStars();
+
+    // Fade-in sections
+    const sections = document.querySelectorAll('section');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if(entry.isIntersecting){ entry.target.classList.add('visible'); } });
+    }, { threshold: 0.1 });
+    sections.forEach(section => observer.observe(section));
   </script>
 </body>
 </html>
+
