@@ -139,11 +139,11 @@
       color: #c0392b;
     }
 
-    /* Gallery - balanced masonry style */
+    /* Gallery */
     .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      grid-auto-rows: 250px; /* base row height */
+      grid-auto-rows: 250px;
       gap: 15px;
       padding: 30px;
       position: relative;
@@ -158,7 +158,7 @@
       cursor: pointer;
       transition: filter 0.3s ease, box-shadow 0.3s ease;
       filter: brightness(0.95);
-      object-fit: cover; /* keeps portrait vs landscape neat */
+      object-fit: cover;
       display: block;
     }
 
@@ -189,12 +189,11 @@
       box-shadow: 0 0 20px rgba(50,50,50,0.5);
       border: 1px solid #333;
       animation: none;
+      pointer-events: none; /* ensures arrows are clickable */
     }
 
     .close, .prev, .next {
       position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
       color: #c0392b;
       font-size: 2rem;
       font-weight: bold;
@@ -202,7 +201,7 @@
       padding: 10px;
       user-select: none;
       transition: color 0.3s ease;
-      z-index: 3000;
+      z-index: 3001; /* above the image */
     }
 
     .close:hover, .prev:hover, .next:hover {
@@ -212,11 +211,19 @@
     .close {
       top: 20px;
       right: 35px;
-      transform: none;
     }
 
-    .prev { left: 10px; }
-    .next { right: 10px; }
+    .prev {
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .next {
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
 
     /* Footer */
     footer {
@@ -388,4 +395,3 @@
   </script>
 </body>
 </html>
-
