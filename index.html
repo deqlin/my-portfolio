@@ -19,11 +19,17 @@
   <meta name="theme-color" content="#0b0b0b">
 
   <style>
-    body {
+    /* Reset */
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
       font-family: 'Cinzel', serif;
       background: #0b0b0b;
-      color: #e0e0e0;
+      color: #f5f5f5;
       overflow-x: hidden;
     }
 
@@ -35,18 +41,20 @@
       padding: 20px;
       text-align: center;
       font-size: 2rem;
+      font-family: 'Press Start 2P', cursive;
+      color: #fff;
+      background: transparent;
       z-index: 1000;
-      background: transparent; /* transparent header */
-      color: #f5f5f5;
     }
 
     main {
-      padding: 120px 20px 40px;
+      padding-top: 100px;
+      padding-bottom: 100px;
       max-width: 1200px;
-      margin: 0 auto;
+      margin: auto;
     }
 
-    /* Masonry-style photo grid */
+    /* Masonry grid */
     .gallery {
       column-count: 3;
       column-gap: 15px;
@@ -55,14 +63,26 @@
     .gallery img {
       width: 100%;
       margin-bottom: 15px;
-      border-radius: 6px;
+      border-radius: 5px;
+      transition: transform 0.3s ease;
       cursor: pointer;
-      transition: transform 0.3s ease, filter 0.3s ease;
+      display: block;
     }
 
     .gallery img:hover {
       transform: scale(1.02);
-      filter: brightness(1.1);
+    }
+
+    @media (max-width: 1024px) {
+      .gallery {
+        column-count: 2;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .gallery {
+        column-count: 1;
+      }
     }
 
     /* Lightbox */
@@ -70,56 +90,55 @@
       display: none;
       position: fixed;
       z-index: 2000;
-      padding-top: 60px;
+      padding: 20px;
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
       overflow: auto;
-      background: rgba(0, 0, 0, 0.95);
+      background-color: rgba(0, 0, 0, 0.95);
     }
 
-    .lightbox img {
-      display: block;
+    .lightbox-content {
       margin: auto;
+      display: block;
       max-width: 90%;
-      max-height: 80vh;
-      border: 4px solid #111; /* subtle DS-like frame */
+      max-height: 90%;
+      border: 2px solid #444;
       border-radius: 6px;
     }
 
-    .lightbox:target {
-      display: block;
-    }
-
-    /* Arrows */
-    .prev, .next {
-      cursor: pointer;
+    .close, .prev, .next {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      color: #bbb;
+      color: #aaa;
       font-size: 2rem;
-      padding: 16px;
-      transition: 0.3s;
+      font-weight: bold;
+      padding: 12px;
+      cursor: pointer;
       user-select: none;
+      transition: color 0.3s ease;
     }
 
-    .prev:hover, .next:hover {
+    .close {
+      top: 20px;
+      right: 35px;
+      transform: none;
+    }
+
+    .prev { left: 10px; }
+    .next { right: 10px; }
+
+    .close:hover, .prev:hover, .next:hover {
       color: #fff;
-    }
-
-    .prev {
-      left: 30px;
-    }
-
-    .next {
-      right: 30px;
     }
 
     /* Starfield */
     .stars {
       position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       z-index: -2;
@@ -139,99 +158,100 @@
       to { transform: translateY(200vh); }
     }
 
-    .stars span {
-      width: 2px;
-      height: 2px;
-      top: -10px;
-      left: calc(100% * var(--x));
-      animation-duration: calc(40s + 20s * var(--y)); /* slowed down 50% */
-    }
-
-    /* Fog */
-    .fog {
+    /* Mist */
+    .mist {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: url('https://i.ibb.co/3Sz1W4Q/fog.png') repeat;
-      opacity: 0.07;
-      animation: fogMove 120s linear infinite;
+      background: radial-gradient(ellipse at bottom, rgba(255,255,255,0.05), transparent 70%);
       z-index: -1;
+      animation: mistmove 60s linear infinite alternate;
     }
 
-    @keyframes fogMove {
-      from { background-position: 0 0; }
-      to { background-position: 10000px 0; }
-    }
-
-    footer {
-      text-align: center;
-      padding: 30px;
-      font-size: 0.9rem;
-      opacity: 0.7;
-    }
-
-    /* Responsive */
-    @media (max-width: 900px) {
-      .gallery { column-count: 2; }
-    }
-
-    @media (max-width: 600px) {
-      .gallery { column-count: 1; }
+    @keyframes mistmove {
+      from { transform: translateX(-5%); }
+      to { transform: translateX(5%); }
     }
   </style>
 </head>
 <body>
-  <div class="stars">
-    <!-- Starfield generator -->
-    <script>
-      for (let i = 0; i < 100; i++) {
-        const star = document.createElement('span');
-        star.style.setProperty('--x', Math.random());
-        star.style.setProperty('--y', Math.random());
-        document.querySelector('.stars').appendChild(star);
-      }
-    </script>
-  </div>
+  <header>My Portfolio</header>
 
-  <div class="fog"></div>
-
-  <header>
-    My Photography Portfolio
-  </header>
+  <!-- Stars background -->
+  <div class="stars"></div>
+  <div class="mist"></div>
 
   <main>
     <section class="gallery">
-      <a href="#img1"><img src="photos/photo1.jpg" alt="Photo 1"></a>
-      <a href="#img2"><img src="photos/photo2.jpg" alt="Photo 2"></a>
-      <a href="#img3"><img src="photos/photo3.jpg" alt="Photo 3"></a>
-      <!-- Add more photos as needed -->
+      <img src="photos/photo1.jpg" alt="Photo 1">
+      <img src="photos/photo2.jpg" alt="Photo 2">
+      <img src="photos/photo3.jpg" alt="Photo 3">
+      <!-- Add more photos here -->
     </section>
   </main>
 
-  <!-- Lightbox images -->
-  <div id="img1" class="lightbox">
-    <a href="#img3" class="prev">&#10094;</a>
-    <img src="photos/photo1.jpg" alt="">
-    <a href="#img2" class="next">&#10095;</a>
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox">
+    <span class="close">&times;</span>
+    <span class="prev">&#10094;</span>
+    <img class="lightbox-content" id="lightbox-img">
+    <span class="next">&#10095;</span>
   </div>
 
-  <div id="img2" class="lightbox">
-    <a href="#img1" class="prev">&#10094;</a>
-    <img src="photos/photo2.jpg" alt="">
-    <a href="#img3" class="next">&#10095;</a>
-  </div>
+  <script>
+    // Create stars
+    const starsContainer = document.querySelector('.stars');
+    const numStars = 80;
 
-  <div id="img3" class="lightbox">
-    <a href="#img2" class="prev">&#10094;</a>
-    <img src="photos/photo3.jpg" alt="">
-    <a href="#img1" class="next">&#10095;</a>
-  </div>
+    for (let i = 0; i < numStars; i++) {
+      const star = document.createElement('span');
+      const size = Math.random() * 2 + 1;
+      star.style.width = size + 'px';
+      star.style.height = size + 'px';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = -10 + 'px';
+      star.style.setProperty('--x', Math.random());
+      star.style.setProperty('--y', Math.random());
+      star.style.animationDuration = (40 + Math.random() * 20) + 's'; // slowed more
+      starsContainer.appendChild(star);
+    }
 
-  <footer>
-    <p>&copy; 2025 My Photography Portfolio</p>
-    <p>Visitor Counter: <span id="visitor-count">00001</span></p>
-  </footer>
+    // Lightbox
+    const galleryImages = document.querySelectorAll('.gallery img');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const closeBtn = document.querySelector('.close');
+    const prevBtn = document.querySelector('.prev');
+    const nextBtn = document.querySelector('.next');
+    let currentIndex = 0;
+
+    galleryImages.forEach((img, index) => {
+      img.addEventListener('click', () => {
+        lightbox.style.display = 'block';
+        lightboxImg.src = img.src;
+        currentIndex = index;
+      });
+    });
+
+    closeBtn.addEventListener('click', () => {
+      lightbox.style.display = 'none';
+    });
+
+    prevBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
+      lightboxImg.src = galleryImages[currentIndex].src;
+    });
+
+    nextBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % galleryImages.length;
+      lightboxImg.src = galleryImages[currentIndex].src;
+    });
+
+    window.addEventListener('click', (e) => {
+      if (e.target === lightbox) lightbox.style.display = 'none';
+    });
+  </script>
 </body>
 </html>
