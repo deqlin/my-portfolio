@@ -130,7 +130,12 @@
       filter: brightness(1.1) contrast(1.1);
     }
 
-    /* Hover captions */
+    /* Hover captions with flicker */
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+      20%, 22%, 24%, 55% { opacity: 0.4; }
+    }
+
     .gallery img:hover::after {
       content: attr(data-caption);
       position: absolute;
@@ -143,6 +148,7 @@
       padding: 4px 6px;
       border-radius: 3px;
       pointer-events: none;
+      animation: flicker 1.5s infinite;
     }
 
     /* Lightbox */
@@ -215,7 +221,6 @@
       color: #ff4c4c;
       text-shadow: 0 0 6px #ff4c4c, 0 0 12px #990000;
     }
-
   </style>
 </head>
 <body>
@@ -266,7 +271,7 @@
     <p>Instagram: <a href="https://instagram.com/awhek" target="_blank">@awhek</a></p>
   </section>
 
-  <!-- Footer with Visitor Counter -->
+  <!-- Footer -->
   <footer>
     <p>&copy; 2025 Deq | Visitors: <span id="visitor-count">...</span></p>
   </footer>
@@ -323,8 +328,8 @@
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       stars = Array.from({length: 150}, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
+        x: Math.random() * canvas.width - canvas.width/2,
+        y: Math.random() * canvas.height - canvas.height/2,
         z: Math.random() * canvas.width
       }));
     }
@@ -359,7 +364,7 @@
     resizeCanvas();
     drawStars();
 
-    // Fade-in sections on scroll
+    // Fade-in sections
     const sections = document.querySelectorAll('section');
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
