@@ -226,6 +226,29 @@
       color: #ff4c4c;
       text-shadow: 0 0 6px #ff4c4c, 0 0 12px #990000;
     }
+
+    /* --- CRT SCANLINE EFFECT --- */
+    #crt-overlay {
+      pointer-events: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.05) 0px,
+        rgba(255,255,255,0.05) 2px,
+        transparent 2px,
+        transparent 4px
+      );
+      z-index: 3000;
+      mix-blend-mode: overlay;
+      animation: flicker 1.5s infinite;
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 0.15; }
+      50% { opacity: 0.25; }
+    }
   </style>
 </head>
 <body>
@@ -285,6 +308,9 @@
     <span class="next" onclick="changeSlide(1)">&#10095;</span>
     <img class="lightbox-content" id="lightbox-img" alt="">
   </div>
+
+  <!-- CRT overlay -->
+  <div id="crt-overlay"></div>
 
   <script>
     const images = document.querySelectorAll('.gallery img');
